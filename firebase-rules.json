@@ -1,0 +1,32 @@
+{
+  "rules": {
+    ".read": "auth != null",
+    ".write": "auth != null",
+    "courses": {
+      ".indexOn": ["instructorId"],
+      "$courseId": {
+        ".read": true,
+        ".write": "auth != null && (!data.exists() || data.child('instructorId').val() === auth.uid)",
+        "ratings": {
+          "$userId": {
+            ".read": true,
+            ".write": "auth != null && auth.uid === $userId"
+          }
+        }
+      }
+    },
+    "comments": {
+      ".indexOn": ["courseId"],
+      "$commentId": {
+        ".read": true,
+        ".write": "auth != null",
+        "replies": {
+          "$replyId": {
+            ".read": true,
+            ".write": "auth != null"
+          }
+        }
+      }
+    }
+  }
+}
